@@ -71,3 +71,7 @@ if st.button("Calculate & Get Meal Plan"):
         st.write(meal_plan)
     else:
         st.error("Please fill in all fields.")
+
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<meta name="google-signin-client_id" content="994027167250-pi3lrsqph3rlo3rur8io7d97156kc99q.apps.googleusercontent.com","project_id":"double-runway-444119-k1","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_secret":"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.apps.googleusercontent.com">
+
