@@ -1,35 +1,46 @@
 import os
-import openai
 import streamlit as st
+import requests
 
-# Load OpenAI API key from environment variable
-API_KEY = os.getenv("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")
-if not API_KEY:
-    st.error("OpenAI API key not found. Set the OPENAI_API_KEY environment variable.")
-else:
-    openai.api_key = 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
+# Configure the Gemini API key
+API_KEY = os.getenv("AIzaSyClGQusntsKRRi5pDyQzjoBxzPafOCqlko")
+API_URL = f"https://generativelanguage.googleapis.com/v1beta2/models/gemini-1.5:generateText?key={API_KEY}"
 
-# Function to get meal plan with OpenAI
+# Function to get meal plan with descriptions using Gemini API
 def get_meal_plan_with_descriptions(calories, restrictions):
     prompt = (
-        f"Design a detailed meal plan for one day, tailored to provide approximately {calories} calories. "
-        f"The plan should include five meals: breakfast, lunch, dinner, and two snacks. For each meal, specify: "
-        f"The meal name, the main ingredient, and a brief description of the meal. "
-        f"Ensure the meal plan adheres to the following dietary restrictions: {', '.join(restrictions)}. "
+        f"Design a detailed meal plan for one day, tailored to provide approximately {calories:.2f} calories. "
+        f"The plan should include five meals: breakfast, lunch, dinner, and two snacks. For each meal, specify:\n"
+        f"- The meal name.\n"
+        f"- The main ingredients.\n"
+        f"- A brief description of the meal.\n"
+        f"Ensure the meal plan adheres to the following dietary restrictions: {', '.join(restrictions)}.\n"
         f"The total calorie count should align with the specified target, and the meals should be diverse and balanced."
     )
 
+    payload = {
+        "prompt": {"text": prompt},
+        "temperature": 0.7,  # Adjust creativity
+        "maxOutputTokens": 700,  # Ensure detailed response
+    }
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {API_KEY}",
+    }
+
     try:
-        response = openai.Completion.create(
-            model="text-davinci-003",  # Use any OpenAI model suitable for text generation
-            prompt=prompt,
-            max_tokens=700,
-            temperature=0.7
-        )
-        meal_plan = response.choices[0].text.strip()
+        # Make the API request
+        response = requests.post(API_URL, headers=headers, json=payload)
+
+        if response.ok:
+            result = response.json()
+            meal_plan = result["candidates"][0]["output"]
+        else:
+            meal_plan = f"Error generating meal plan: {response.status_code} - {response.text}"
     except Exception as e:
         meal_plan = f"Error generating meal plan: {str(e)}"
-
+    
     return meal_plan
 
 # Calorie calculation function
@@ -42,7 +53,7 @@ def calculate_calories(age, weight, height, gender):
     return daily_calories
 
 # Streamlit application
-st.title("Daily Calorie Intake & Meal Plan with OpenAI")
+st.title("Daily Calorie Intake & Meal Plan with Descriptions")
 
 name = st.text_input("Name")
 age = st.number_input("Age", min_value=1, max_value=120, step=1)
