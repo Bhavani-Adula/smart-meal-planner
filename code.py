@@ -3,8 +3,8 @@ import streamlit as st
 import requests
 
 # Configure the Gemini API key
-API_KEY = os.getenv("AIzaSyClGQusntsKRRi5pDyQzjoBxzPafOCqlko")
-API_URL = f"https://generativelanguage.googleapis.com/v1beta2/models/gemini-1.5:generateText?key={API_KEY}"
+API_KEY = os.getenv("AIzaSyA341Ec9tWeenaXt8boCibTbjsspi01PW8")
+API_URL = f"https://generativelanguage.googleapis.com/v1beta2/models/gemini-1.5:generateText?key={AIzaSyA341Ec9tWeenaXt8boCibTbjsspi01PW8}"
 
 # Function to get meal plan with descriptions using Gemini API
 def get_meal_plan_with_descriptions(calories, restrictions):
